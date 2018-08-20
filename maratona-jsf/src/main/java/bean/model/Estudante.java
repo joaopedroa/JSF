@@ -8,7 +8,7 @@ public class Estudante {
     private String nome = "João";
     private String sobrenome = "Pedro";
     private double nota1 = 1;
-    private double nota2;
+    private double nota2 = 5;
     private double nota3 = 10;
 
     public Turno getTurno() {

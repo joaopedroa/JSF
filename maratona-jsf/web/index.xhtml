@@ -5,25 +5,93 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui"
-   >
-   <f:view>
-      <p:importEnum type="bean.model.enums.Turno" var="joao" allSuffix="ALL_ENUM_VALUES" />
 
-      <h:outputLabel value="Nome do estudante:"/><br/>
-      <h:outputLabel value="#{estudanteRegistraBean.estudante.nome}"/><br/>
-      <h:outputText value = "Comparando notas:"/><br/>
-      <h:outputLabel value="#{estudanteRegistraBean.estudante.nota1 le estudanteRegistraBean.estudante.nota2}"/><br/>
-      <h:outputLabel value="#{estudanteRegistraBean.estudante.nota1 eq 0 ? estudanteRegistraBean.estudante.nota2 : 'não é igual'}"/><br/>
-       <h:outputLabel value="#{estudanteRegistraBean.estudante.nome += 'teste'}"/>
+>
+<h:head></h:head>
+<f:view>
+    <p:importEnum type="bean.model.enums.Turno" var="joao" allSuffix="ALL_ENUM_VALUES"/>
+    <c:set var = 'teste' value="#{[1,2,3,4,5,6,7]}"></c:set>
+    <!-- Expression Language -->
+    <h:outputLabel value="Nome do estudante:"/><br/>
+    <h:outputLabel value="#{estudanteRegistraBean.estudante.nome}"/><br/>
+    <h:outputText value="Comparando notas:"/><br/>
+    <h:outputLabel value="#{estudanteRegistraBean.estudante.nota1 le estudanteRegistraBean.estudante.nota2}"/><br/>
+    <h:outputLabel
+            value="#{estudanteRegistraBean.estudante.nota1 eq 0 ? estudanteRegistraBean.estudante.nota2 : 'não é igual'}"/><br/>
+    <h:outputLabel value="#{estudanteRegistraBean.estudante.nome += 'teste'}"/>
 
-      <h:outputLabel value="#{estudanteRegistraBean.estudante.turno eq joao.MATUTINO }"/><br/>
+    <!-- Criando Enum -->
+    <h:outputLabel value="#{estudanteRegistraBean.estudante.turno eq joao.MATUTINO }"/><br/>
 
-      <ui:repeat value="#{estudanteRegistraBean.nomesArray}" var="teste">
-         <h:outputLabel value="#{teste}"/><br/>
-      </ui:repeat>
+    <!-- Percorrendo Array FOR -->
+    <h:outputLabel value="==============================="/><br/>
+    <ui:repeat value="#{estudanteRegistraBean.nomesArray}" var="teste">
+        <h:outputLabel value="#{teste}"/><br/>
+    </ui:repeat>
+    <h:outputLabel value="==============================="/><br/>
 
-      <h:outputLabel value="#{estudanteRegistraBean.nomesList.get(0)}"/><br/>
+    <!-- Pegando valor de uma lista -->
+    <h:outputLabel value="#{estudanteRegistraBean.nomesList.get(0)}"/><br/>
 
-   </f:view>
+    <!-- Chamando metodos  e criando button-->
+    <h:outputLabel value="#{estudanteRegistraBean.imprimir('joaossss')}"/><br/>
+    <h:outputLabel value="#{estudanteRegistraBean.retornaNome('João Pedro Amaral')}"/><br/>
+    <h:form>
+        <h:commandButton value="Ir para index2" action="#{estudanteRegistraBean.irPagina('index2')}"></h:commandButton>
+    </h:form>
+
+    <!-- CSS e JS -->
+    <h:outputLabel value="==============================="/><br/>
+    <ui:repeat value="#{estudanteRegistraBean.nomesArray}" var="teste" varStatus="status">
+        <h:outputLabel value="#{teste}" style="color: #{status.index mod 2 == 0 ? 'red' : 'green'}"/><br/>
+    </ui:repeat>
+    <h:commandButton value='fazerMagica'
+                     onclick="fazerMagica('#{estudanteRegistraBean.estudante.nome}')"></h:commandButton><br/>
+    <h:outputLabel value="==============================="/><br/>
+    <script type="text/javascript">
+        function fazerMagica(magica) {
+            return alert(magica);
+        }
+    </script>
+
+    <!-- Manipulando exibição com rendered e ajax -->
+    <h:form>
+        <h:commandButton value="ExibirNotas">
+            <f:ajax render="notasGrid" listener="#{estudanteRegistraBean.mostraNotasAgora()}"/>
+        </h:commandButton>
+
+        <h:panelGrid id='notasGrid'>
+            <h:outputText value="#{estudanteRegistraBean.estudante.nome}"></h:outputText>
+            <h:outputText value="#{estudanteRegistraBean.estudante.sobrenome}"></h:outputText>
+            <h:outputText value="#{estudanteRegistraBean.estudante.turno}"></h:outputText>
+            <h:outputText value="#{estudanteRegistraBean.estudante.nota1}"
+                          rendered="#{estudanteRegistraBean.mostrarnotas}"></h:outputText>
+            <h:outputText value="#{estudanteRegistraBean.estudante.nota2}"
+                          rendered="#{estudanteRegistraBean.mostrarnotas}"></h:outputText>
+            <h:outputText value="#{estudanteRegistraBean.estudante.nota3}"
+                          rendered="#{estudanteRegistraBean.mostrarnotas}"></h:outputText>
+            <h:outputText value="#{estudanteRegistraBean.mostrarnotas}" ></h:outputText>
+        </h:panelGrid>
+    </h:form>
+
+    <!-- LAMBDA-->
+    ${((soma, num) -> soma + num)(50,10)}<br/>
+    #{(x-> x*x*x)(3)}<br/>
+    #{cubo=(x->x*x*x); cubo(25)}<br/>
+    <h:form>
+        <h:commandButton value = "Calcular Cubo" action="#{estudanteRegistraBean.calcularCubo((x-> x*x*x),3)}"/>
+    </h:form>
+    <!--Listas-->
+    <ui:repeat value = "#{['Joao','Pedro','Amaral']}" var="Joao">
+        #{Joao}
+    </ui:repeat>
+
+    <ui:repeat value="#{teste.stream().filter(maior->maior>2).toArray()}" var="testando">
+        #{testando}
+    </ui:repeat>
+    ${teste.stream().sum()}
+    ${teste.stream().filter(p->p>2).sum()}
+</f:view>
 </html>
